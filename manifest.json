@@ -1,0 +1,21 @@
+{
+  "name": "AIRBOOK",
+  "short_name": "AIRBOOK",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#0F172A",
+  "theme_color": "#0F172A",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "05_AIRBOOK_Isotipo2192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "05_AIRBOOK_Isotipo512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
