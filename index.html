@@ -18,8 +18,6 @@
 
 <link rel="icon" type="image/png" sizes="512x512" href="05_AIRBOOK_Isotipo512.png">
 
-<meta http-equiv="refresh" content="3; url=https://script.google.com/macros/s/AKfycbxXqiwajynewDOeWjcKKZLx1NscpI3r9wE1vjLaG5XSSKchcI8554DezOFp3XV9SbZD/exec">
-
 <style>
 
 body{
@@ -53,19 +51,44 @@ p{
   margin-top:10px;
 }
 
+.fade{
+  opacity:0;
+  animation:fadeIn 1s forwards;
+}
+
+@keyframes fadeIn{
+  to{
+    opacity:1;
+  }
+}
+
 </style>
+
+<script>
+
+window.addEventListener("load", function(){
+
+  setTimeout(function(){
+
+    window.location.href = "https://script.google.com/macros/s/AKfycbxXqiwajynewDOeWjcKKZLx1NscpI3r9wE1vjLaG5XSSKchcI8554DezOFp3XV9SbZD/exec";
+
+  }, 3000);
+
+});
+
+</script>
 
 </head>
 
 <body>
 
-<div class="container">
+<div class="container fade">
 
-<img src="05_AIRBOOK_Isotipo512.png">
+<img src="05_AIRBOOK_Isotipo512.png" alt="AIRBOOK">
 
 <h1>AIRBOOK</h1>
 
-<p>Redirigiendo al Dashboard...</p>
+<p>Iniciando sistema de reservas...</p>
 
 </div>
 
