@@ -20,77 +20,91 @@
 
 <style>
 
-body{
+html, body{
   margin:0;
+  padding:0;
+  width:100%;
+  height:100%;
+  overflow:hidden;
   background:#0F172A;
-  color:white;
+  font-family:Arial,sans-serif;
+}
+
+#loader{
+  position:fixed;
+  inset:0;
+  background:#0F172A;
   display:flex;
+  flex-direction:column;
   justify-content:center;
   align-items:center;
-  height:100vh;
-  font-family:Arial,sans-serif;
-  text-align:center;
+  color:white;
+  z-index:9999;
+  transition:opacity .5s ease;
 }
 
-.container{
-  padding:20px;
-}
-
-img{
+#loader img{
   width:140px;
   margin-bottom:20px;
 }
 
-h1{
+#loader h1{
   margin:0;
   font-size:42px;
 }
 
-p{
-  opacity:0.8;
-  margin-top:10px;
+#loader p{
+  opacity:.8;
 }
 
-.fade{
+iframe{
+  width:100%;
+  height:100%;
+  border:none;
+}
+
+.hidden{
   opacity:0;
-  animation:fadeIn 1s forwards;
-}
-
-@keyframes fadeIn{
-  to{
-    opacity:1;
-  }
+  pointer-events:none;
 }
 
 </style>
-
-<script>
-
-window.addEventListener("load", function(){
-
-  setTimeout(function(){
-
-    window.location.href = "https://script.google.com/macros/s/AKfycbxXqiwajynewDOeWjcKKZLx1NscpI3r9wE1vjLaG5XSSKchcI8554DezOFp3XV9SbZD/exec";
-
-  }, 3000);
-
-});
-
-</script>
 
 </head>
 
 <body>
 
-<div class="container fade">
+<div id="loader">
 
 <img src="05_AIRBOOK_Isotipo512.png" alt="AIRBOOK">
 
 <h1>AIRBOOK</h1>
 
-<p>Iniciando sistema de reservas...</p>
+<p>Cargando dashboard...</p>
 
 </div>
+
+<iframe
+id="appFrame"
+src="https://script.google.com/macros/s/AKfycbyQA-kkj1KWzChiR7Fp3nU6CMmsilFZJqNxWPrUBVkBxdEMlJh5I0d6vFEgpRVfMrEg/exec">
+</iframe>
+
+<script>
+
+const frame = document.getElementById("appFrame");
+const loader = document.getElementById("loader");
+
+frame.onload = () => {
+
+  setTimeout(() => {
+
+    loader.classList.add("hidden");
+
+  }, 1200);
+
+};
+
+</script>
 
 </body>
 
