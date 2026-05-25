@@ -1,6 +1,6 @@
 {
-  "name": "AIRBOOK",
-  "short_name": "AIRBOOK",
+  "name": "AIRBOOK DEMO",
+  "short_name": "AIRBOOK DEMO",
   "start_url": "./",
   "display": "standalone",
   "background_color": "#0F172A",
