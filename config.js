@@ -1,3 +1,3 @@
 window.AIRBOOK_CONFIG = {
-  WEBAPP_URL: "https://script.google.com/macros/s/AKfycbwqSXX_MFtk3bji13eeqJ2H5LbvP9aQDqOyAV2TA343DAqdj7BmYS6fAb2shUZNctkT/exec"
+  WEBAPP_URL: "https://script.google.com/macros/s/AKfycbwkitiuA79SFluFnovR2IugXOv1ZjfSeI51dI5ZHRHqcorSMq4dHX-ZY_TaWWcoUEvT/exec"
 };
