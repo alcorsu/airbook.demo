@@ -68,7 +68,23 @@ iframe{
   pointer-events:none;
 }
 
+.error-box{
+  color:white;
+  text-align:center;
+  padding:30px;
+}
+
+.error-box h2{
+  margin-bottom:10px;
+}
+
+.error-box p{
+  opacity:.8;
+}
+
 </style>
+
+<script src="config.js"></script>
 
 </head>
 
@@ -84,15 +100,32 @@ iframe{
 
 </div>
 
-<iframe
-id="appFrame"
-src="https://script.google.com/macros/s/AKfycbz6gj8DFojDyBIBDDzQzhJINgUTVyUTy1kWecsVU96X5HbgIc79e2FkfssQscxdtMgj/exec">
-</iframe>
+<iframe id="appFrame"></iframe>
 
 <script>
 
 const frame = document.getElementById("appFrame");
 const loader = document.getElementById("loader");
+
+const webAppUrl =
+  window.AIRBOOK_CONFIG &&
+  window.AIRBOOK_CONFIG.WEBAPP_URL
+    ? window.AIRBOOK_CONFIG.WEBAPP_URL
+    : "";
+
+if (webAppUrl) {
+
+  frame.src = webAppUrl;
+
+} else {
+
+  loader.innerHTML =
+    "<div class='error-box'>" +
+    "<h2>⚠️ Configuración incompleta</h2>" +
+    "<p>No se encontró WEBAPP_URL en config.js.</p>" +
+    "</div>";
+
+}
 
 frame.onload = () => {
 
