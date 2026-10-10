@@ -1,144 +1,1051 @@
 <!DOCTYPE html>
 <html lang="es">
-
 <head>
+
+<link rel="apple-touch-icon" sizes="180x180" href="05_AIRBOOK_Isotipo2180.png">
+<link rel="icon" type="image/png" sizes="192x192" href="05_AIRBOOK_Isotipo2192.png">
+<link rel="icon" type="image/png" sizes="512x512" href="05_AIRBOOK_Isotipo512.png">
+
+<meta name="theme-color" content="#0F172A">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="AirBook">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>AIRBOOK DEMO</title>
-
-<meta name="theme-color" content="#0F172A">
+<title>AIRBOOK Dashboard</title>
 
 <link rel="manifest" href="manifest.json">
-
-<link rel="apple-touch-icon" sizes="180x180" href="05_AIRBOOK_Isotipo2180.png">
-
-<link rel="icon" type="image/png" sizes="192x192" href="05_AIRBOOK_Isotipo2192.png">
-
-<link rel="icon" type="image/png" sizes="512x512" href="05_AIRBOOK_Isotipo512.png">
-
+<script src="config.js?v=3"></script>
+<script src="api.js?v=1"></script>
 <style>
-
-html, body{
-  margin:0;
-  padding:0;
-  width:100%;
-  height:100%;
-  overflow:hidden;
-  background:#0F172A;
-  font-family:Arial,sans-serif;
+:root {
+  --navy: #0F172A;
+  --navy-2: #1E3A8A;
+  --blue: #2563EB;
+  --blue-soft: #DBEAFE;
+  --sky: #38BDF8;
+  --bg: #F8FAFC;
+  --card: #FFFFFF;
+  --text: #0F172A;
+  --muted: #64748B;
+  --border: #E2E8F0;
+  --green: #16A34A;
+  --green-soft: #DCFCE7;
+  --red: #DC2626;
+  --red-soft: #FEE2E2;
+  --amber: #F59E0B;
+  --amber-soft: #FEF3C7;
+  --shadow: 0 14px 34px rgba(15, 23, 42, .08);
 }
 
-#loader{
-  position:fixed;
-  inset:0;
-  background:#0F172A;
-  display:flex;
-  flex-direction:column;
-  justify-content:center;
-  align-items:center;
-  color:white;
-  z-index:9999;
-  transition:opacity .25s ease;
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
 }
 
-#loader img{
-  width:140px;
-  margin-bottom:20px;
+body {
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+  font-family: Inter, Montserrat, Arial, sans-serif;
 }
 
-#loader h1{
-  margin:0;
-  font-size:42px;
+.app {
+  max-width: 1500px;
+  margin: 0 auto;
+  padding: 26px;
 }
 
-#loader p{
-  opacity:.8;
+.topbar {
+  background: linear-gradient(135deg, var(--navy), #0B2A6F);
+  color: white;
+  border-radius: 28px;
+  padding: 24px 28px;
+  display: flex;
+  justify-content: space-between;
+  gap: 24px;
+  align-items: center;
+  box-shadow: 0 20px 45px rgba(15, 23, 42, .22);
 }
 
-iframe{
-  width:100%;
-  height:100%;
-  border:none;
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 20px;
 }
 
-.hidden{
-  opacity:0;
-  pointer-events:none;
+.logo-airbook {
+  height: 92px;
+  width: auto;
+  display: block;
 }
 
-.error-box{
-  color:white;
-  text-align:center;
-  padding:30px;
+.brand-divider {
+  height: 70px;
+  width: 1px;
+  background: rgba(255,255,255,.28);
 }
 
-.error-box h2{
-  margin-bottom:10px;
+.brand-title h1 {
+  font-size: 32px;
+  line-height: 1;
+  margin-bottom: 8px;
 }
 
-.error-box p{
-  opacity:.8;
+.brand-title p {
+  color: #CBD5E1;
+  font-size: 15px;
 }
 
+.club-info {
+  text-align: right;
+  line-height: 1.55;
+}
+
+.club-info strong {
+  font-size: 18px;
+}
+
+.club-info p {
+  color: #CBD5E1;
+  font-size: 14px;
+}
+
+.navbar {
+  display: flex;
+  gap: 12px;
+  margin: 18px 0 20px;
+  background: var(--navy);
+  padding: 10px;
+  border-radius: 18px;
+}
+
+.navitem {
+  color: white;
+  border: none;
+  background: transparent;
+  padding: 12px 18px;
+  border-radius: 14px;
+  cursor: pointer;
+  font-weight: 700;
+  opacity: .82;
+}
+
+.navitem.active,
+.navitem:hover {
+  background: rgba(56,189,248,.16);
+  opacity: 1;
+}
+
+.kpis {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+  margin-bottom: 18px;
+}
+
+.kpi {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 22px;
+  padding: 20px;
+  box-shadow: var(--shadow);
+  display: flex;
+  gap: 16px;
+  align-items: center;
+}
+
+.kpi-icon {
+  width: 54px;
+  height: 54px;
+  border-radius: 18px;
+  background: var(--blue);
+  color: white;
+  display: grid;
+  place-items: center;
+  font-size: 26px;
+  flex: 0 0 auto;
+}
+
+.kpi-label {
+  font-size: 13px;
+  color: var(--muted);
+  font-weight: 800;
+  text-transform: uppercase;
+  margin-bottom: 4px;
+}
+
+.kpi-value {
+  font-size: 34px;
+  font-weight: 900;
+  line-height: 1;
+}
+
+.kpi-detail {
+  margin-top: 6px;
+  color: var(--muted);
+  font-size: 13px;
+}
+
+.panel {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 24px;
+  box-shadow: var(--shadow);
+  padding: 18px;
+  margin-bottom: 18px;
+}
+
+.section-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 16px;
+}
+
+.section-title {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.section-title h2 {
+  font-size: 20px;
+}
+
+.section-title span {
+  color: var(--muted);
+  font-size: 13px;
+}
+
+.small-btn {
+  border: 1px solid var(--border);
+  background: white;
+  color: var(--blue);
+  padding: 10px 14px;
+  border-radius: 12px;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.aircraft-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(260px, 1fr));
+  gap: 16px;
+}
+
+.aircraft-card {
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  padding: 16px;
+  background: linear-gradient(180deg, #FFFFFF, #F8FAFC);
+  min-height: 420px;
+}
+
+.aircraft-card.fdv {
+  border-color: #FCA5A5;
+  background: linear-gradient(180deg, #FFF7F7, #FFFFFF);
+}
+
+.aircraft-head {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  align-items: flex-start;
+  margin-bottom: 12px;
+}
+
+.aircraft-name {
+  color: var(--blue);
+  font-size: 19px;
+  font-weight: 900;
+}
+
+.aircraft-sub {
+  color: var(--muted);
+  font-size: 13px;
+  margin-top: 4px;
+}
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 7px 11px;
+  border-radius: 999px;
+  font-size: 11px;
+  font-weight: 900;
+  white-space: nowrap;
+}
+
+.badge.ok {
+  background: var(--green-soft);
+  color: var(--green);
+}
+
+.badge.red {
+  background: var(--red-soft);
+  color: var(--red);
+}
+
+.timeline {
+  border-top: 1px solid var(--border);
+  padding-top: 10px;
+}
+
+.slot {
+  display: grid;
+  grid-template-columns: 54px 1fr;
+  gap: 8px;
+  align-items: stretch;
+  min-height: 38px;
+  border-bottom: 1px solid #EDF2F7;
+}
+
+.slot-hour {
+  font-size: 12px;
+  font-weight: 800;
+  color: var(--navy);
+  padding-top: 9px;
+}
+
+.slot-box {
+  margin: 4px 0;
+  border-radius: 10px;
+  padding: 7px 10px;
+  font-size: 12px;
+  line-height: 1.25;
+}
+
+.slot.disponible .slot-box {
+  color: var(--muted);
+  background: transparent;
+}
+
+.slot.reservada .slot-box {
+  background: #DCEBFF;
+  border: 1px solid #B8D4FF;
+  color: #0649B8;
+  font-weight: 800;
+}
+
+.slot.fuera .slot-box {
+  background: var(--red-soft);
+  border: 1px solid #FCA5A5;
+  color: var(--red);
+  font-weight: 900;
+}
+
+.slot-detail {
+  display: block;
+  font-weight: 600;
+  opacity: .9;
+  margin-top: 2px;
+}
+
+.fdv-box {
+  min-height: 310px;
+  border: 1px solid #FCA5A5;
+  border-radius: 18px;
+  background: #FFF1F2;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 22px;
+  color: var(--navy);
+}
+
+.fdv-box h3 {
+  color: var(--red);
+  margin-bottom: 12px;
+}
+
+.card-link {
+  margin-top: 12px;
+  border: none;
+  background: transparent;
+  color: var(--blue);
+  font-weight: 900;
+  cursor: pointer;
+  width: 100%;
+  padding: 10px;
+}
+
+.lower-grid {
+  display: grid;
+  grid-template-columns: 1.15fr .9fr .95fr;
+  gap: 18px;
+  margin-bottom: 18px;
+}
+
+.table-card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 22px;
+  box-shadow: var(--shadow);
+  padding: 18px;
+  min-height: 260px;
+}
+
+.table-title {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 14px;
+}
+
+.table-title h2 {
+  font-size: 18px;
+}
+
+.table-wrap {
+  overflow-x: auto;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+}
+
+th {
+  text-align: left;
+  color: var(--muted);
+  font-size: 11px;
+  text-transform: uppercase;
+  padding: 10px 8px;
+  border-bottom: 1px solid var(--border);
+}
+
+td {
+  padding: 10px 8px;
+  border-bottom: 1px solid #EEF2F7;
+  vertical-align: top;
+}
+
+td strong.red {
+  color: var(--red);
+}
+
+.type-pill {
+  display: inline-block;
+  padding: 5px 9px;
+  border-radius: 999px;
+  background: var(--blue-soft);
+  color: var(--blue);
+  font-size: 11px;
+  font-weight: 900;
+}
+
+.alert-list {
+  display: grid;
+  gap: 10px;
+}
+
+.alert {
+  display: grid;
+  grid-template-columns: 38px 1fr;
+  gap: 10px;
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 12px;
+  align-items: center;
+}
+
+.alert-icon {
+  width: 34px;
+  height: 34px;
+  border-radius: 12px;
+  display: grid;
+  place-items: center;
+  color: white;
+  font-weight: 900;
+}
+
+.alert.danger .alert-icon {
+  background: var(--red);
+}
+
+.alert.info .alert-icon {
+  background: var(--blue);
+}
+
+.alert.ok .alert-icon {
+  background: var(--green);
+}
+
+.alert-title {
+  font-weight: 900;
+  font-size: 13px;
+}
+
+.alert-detail {
+  color: var(--muted);
+  font-size: 12px;
+  margin-top: 3px;
+}
+
+.actions {
+  background: var(--navy);
+  border-radius: 22px;
+  padding: 14px;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 14px;
+  box-shadow: var(--shadow);
+}
+
+.action {
+  border: none;
+  background: var(--blue);
+  color: white;
+  padding: 18px;
+  border-radius: 16px;
+  font-size: 16px;
+  font-weight: 900;
+  cursor: pointer;
+}
+
+.action.secondary {
+  background: #123B7A;
+}
+
+.action:hover:not(:disabled) {
+  filter: brightness(1.08);
+}
+
+.action:disabled {
+  opacity: .45;
+  cursor: not-allowed;
+}
+
+.empty,
+.loading {
+  color: var(--muted);
+  font-size: 14px;
+  padding: 16px 0;
+}
+
+/* Evita que las tablas ensanchen la página en celulares */
+.lower-grid > * {
+  min-width: 0;
+}
+
+.table-title {
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+@media (max-width: 1200px) {
+  .aircraft-grid {
+    grid-template-columns: repeat(2, minmax(260px, 1fr));
+  }
+
+  .lower-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 760px) {
+  .app {
+    padding: 14px;
+  }
+
+  .topbar {
+    flex-direction: column;
+    align-items: flex-start;
+    border-radius: 20px;
+  }
+
+  .brand {
+    align-items: flex-start;
+  }
+
+  .brand-divider {
+    display: none;
+  }
+
+  .logo-airbook {
+    height: 76px;
+  }
+
+  .club-info {
+    text-align: left;
+  }
+
+  .navbar {
+    overflow-x: auto;
+  }
+
+  .kpis {
+    grid-template-columns: 1fr;
+  }
+
+  .aircraft-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .actions {
+    grid-template-columns: 1fr;
+  }
+}
 </style>
-
-<script src="config.js?v=2"></script>
-
 </head>
 
 <body>
 
-<div id="loader">
+<main class="app">
 
-<img src="05_AIRBOOK_Isotipo512.png" alt="AIRBOOK">
+  <header class="topbar">
+    <div class="brand">
+      <img
+        src="AIRBOOK_Logo_Dashboard_Transparente.png"
+        alt="AIRBOOK"
+        class="logo-airbook"
+      />
 
-<h1>AIRBOOK</h1>
+      <div class="brand-divider"></div>
 
-<p>Cargando dashboard...</p>
+      <div class="brand-title">
+        <h1>Panel Operacional</h1>
+        <p>Reservas, disponibilidad y estado de flota</p>
+      </div>
+    </div>
 
-</div>
+    <div class="club-info">
+      <strong id="nombreClub">Cargando club...</strong>
+      <p id="fechaActual">Cargando fecha...</p>
+      <p id="horaActualizacion">Actualizando...</p>
+    </div>
+  </header>
 
-<iframe id="appFrame"></iframe>
+  <nav class="navbar">
+    <button class="navitem active">Panel</button>
+    <button id="navReserva" class="navitem">Reservas</button>
+    <button id="navCalendario" class="navitem">Calendario</button>
+    <button id="navFDV" class="navitem">Fuera de vuelo</button>
+  </nav>
+
+  <section class="kpis">
+    <article class="kpi">
+      <div class="kpi-icon">📅</div>
+      <div>
+        <p class="kpi-label">Reservas hoy</p>
+        <div id="reservasHoy" class="kpi-value">0</div>
+        <p id="proximaReservaTxt" class="kpi-detail">Próxima: —</p>
+      </div>
+    </article>
+
+    <article class="kpi">
+      <div class="kpi-icon">🗓️</div>
+      <div>
+        <p class="kpi-label">Reservas del mes</p>
+        <div id="reservasMes" class="kpi-value">0</div>
+        <p class="kpi-detail">Programación mensual</p>
+      </div>
+    </article>
+
+    <article class="kpi">
+      <div class="kpi-icon">✈️</div>
+      <div>
+        <p class="kpi-label">Aeronaves operativas</p>
+        <div id="aeronavesOperativas" class="kpi-value">0</div>
+        <p id="totalFlotaTxt" class="kpi-detail">de 0 aeronaves</p>
+      </div>
+    </article>
+
+    <article class="kpi">
+      <div class="kpi-icon">🔧</div>
+      <div>
+        <p class="kpi-label">Fuera de vuelo</p>
+        <div id="fueraDeVuelo" class="kpi-value">0</div>
+        <p class="kpi-detail">Aeronaves no disponibles</p>
+      </div>
+    </article>
+  </section>
+
+  <section class="panel">
+    <div class="section-head">
+      <div class="section-title">
+        <h2>✈️ Disponibilidad y reservas por aeronave</h2>
+        <span>Horas disponibles y ocupadas del día</span>
+      </div>
+
+      <button id="btnCalendarioTop" class="small-btn">Ver calendario del día</button>
+    </div>
+
+    <div id="tarjetasAeronaves" class="aircraft-grid">
+      <p class="loading">Cargando disponibilidad...</p>
+    </div>
+  </section>
+
+  <section class="lower-grid">
+
+    <article class="table-card">
+      <div class="table-title">
+        <h2>📅 Reservas del mes</h2>
+        <button id="btnCalendarioMes" class="small-btn">Ver calendario mensual</button>
+      </div>
+
+      <div id="reservasMesDetalle" class="table-wrap">
+        <p class="loading">Cargando reservas del mes...</p>
+      </div>
+    </article>
+
+    <article class="table-card">
+      <div class="table-title">
+        <h2>🔧 Aeronaves fuera de vuelo</h2>
+      </div>
+
+      <div id="fueraDeVueloDetalle" class="table-wrap">
+        <p class="loading">Cargando fuera de vuelo...</p>
+      </div>
+    </article>
+
+    <article class="table-card">
+      <div class="table-title">
+        <h2>🔔 Alertas y estado</h2>
+      </div>
+
+      <div id="alertas" class="alert-list">
+        <p class="loading">Cargando alertas...</p>
+      </div>
+    </article>
+
+  </section>
+
+  <section class="actions">
+    <button id="btnReserva" class="action">📅 Nueva reserva</button>
+    <button id="btnFDV" class="action secondary">🔧 Fuera de vuelo</button>
+    <button id="btnCalendario" class="action secondary">🗓️ Calendario AIRBOOK</button>
+  </section>
+
+</main>
 
 <script>
-
-const frame = document.getElementById("appFrame");
-const loader = document.getElementById("loader");
-
-const webAppUrl =
-  window.AIRBOOK_CONFIG &&
-  window.AIRBOOK_CONFIG.WEBAPP_URL
-    ? window.AIRBOOK_CONFIG.WEBAPP_URL
-    : "";
-
-if (webAppUrl) {
-
-  frame.src = webAppUrl;
-
-} else {
-
-  loader.innerHTML =
-    "<div class='error-box'>" +
-    "<h2>⚠️ Configuración incompleta</h2>" +
-    "<p>No se encontró WEBAPP_URL en config.js.</p>" +
-    "</div>";
-
+function cargarDatos() {
+  airbook.llamar("dashboard")
+    .then(cargarDashboard)
+    .catch(mostrarError);
 }
 
-frame.onload = () => {
+document.addEventListener("DOMContentLoaded", cargarDatos);
 
-  setTimeout(() => {
+// Actualiza el panel cada 5 minutos mientras esté abierto
+setInterval(function () {
+  if (!document.hidden) cargarDatos();
+}, 5 * 60 * 1000);
 
-    loader.classList.add("hidden");
+let linksGlobales = {};
 
-  }, 150);
+function cargarDashboard(data) {
+  linksGlobales = airbook.paginas;
 
-};
+  document.getElementById("nombreClub").textContent =
+    data.club || "Club Aéreo";
 
+  document.getElementById("fechaActual").textContent =
+    data.fecha || "";
+
+  document.getElementById("horaActualizacion").textContent =
+    "Última actualización " + (data.horaActualizacion || "");
+
+  document.getElementById("reservasHoy").textContent =
+    data.reservasHoy || 0;
+
+  document.getElementById("reservasMes").textContent =
+    data.reservasMes || 0;
+
+  document.getElementById("aeronavesOperativas").textContent =
+    data.aeronavesOperativas || 0;
+
+  document.getElementById("fueraDeVuelo").textContent =
+    data.fueraDeVuelo || 0;
+
+  document.getElementById("totalFlotaTxt").textContent =
+    "de " + (data.totalFlota || 0) + " aeronaves";
+
+  if (data.proximaReserva) {
+    document.getElementById("proximaReservaTxt").textContent =
+      "Próxima: " +
+      escapar(data.proximaReserva.inicio) +
+      " · " +
+      escapar(data.proximaReserva.avion);
+  } else {
+    document.getElementById("proximaReservaTxt").textContent =
+      "Sin próximas reservas hoy";
+  }
+
+  cargarTarjetasAeronaves(data.tarjetasAeronaves || []);
+  cargarReservasMes(data.reservasMesDetalle || []);
+  cargarFueraDeVuelo(data.fueraDeVueloDetalle || []);
+  cargarAlertas(data.alertas || []);
+  configurarBotones(airbook.paginas);
+}
+
+function cargarTarjetasAeronaves(tarjetas) {
+  const contenedor = document.getElementById("tarjetasAeronaves");
+  contenedor.innerHTML = "";
+
+  if (!tarjetas.length) {
+    contenedor.innerHTML =
+      '<p class="empty">No hay aeronaves configuradas.</p>';
+    return;
+  }
+
+  tarjetas.forEach(function(a) {
+    const card = document.createElement("article");
+    const fuera = a.estado === "FUERA DE VUELO";
+
+    card.className = "aircraft-card" + (fuera ? " fdv" : "");
+
+    if (fuera) {
+      card.innerHTML = `
+        <div class="aircraft-head">
+          <div>
+            <div class="aircraft-name">${escapar(a.avion)}</div>
+            <div class="aircraft-sub">${escapar(a.motivo || "Fuera de vuelo")}</div>
+          </div>
+          <span class="badge red">FUERA DE VUELO</span>
+        </div>
+
+        <div class="fdv-box">
+          <div>
+            <h3>🔧 Aeronave fuera de vuelo</h3>
+            <p>${escapar(a.motivo || "Aeronave no disponible")}</p>
+            <br>
+            <p><strong>Desde:</strong> ${escapar(a.fdvDesde || "—")}</p>
+            <p><strong>Hasta:</strong> ${escapar(a.fdvHasta || "—")}</p>
+          </div>
+        </div>
+
+        <button class="card-link" onclick="irCalendario()">Ver detalles →</button>
+      `;
+    } else {
+      const slotsHtml = (a.slots || []).map(function(s) {
+        const clase =
+          s.estado === "RESERVADA"
+            ? "reservada"
+            : s.estado === "FUERA_DE_VUELO"
+              ? "fuera"
+              : "disponible";
+
+        let contenido = "";
+
+        if (s.estado === "RESERVADA") {
+          contenido =
+            `<strong>${escapar(s.etiqueta)}</strong>` +
+            `<span class="slot-detail">${escapar(s.detalle || "Reserva")}</span>` +
+            `<span class="slot-detail">${escapar(s.tipo || "")}</span>`;
+        } else {
+          contenido = escapar(s.etiqueta || "Disponible");
+        }
+
+        return `
+          <div class="slot ${clase}">
+            <div class="slot-hour">${escapar(s.hora)}</div>
+            <div class="slot-box">${contenido}</div>
+          </div>
+        `;
+      }).join("");
+
+      card.innerHTML = `
+        <div class="aircraft-head">
+          <div>
+            <div class="aircraft-name">${escapar(a.avion)}</div>
+            <div class="aircraft-sub">${escapar(a.reservasHoy || 0)} reserva(s) hoy</div>
+          </div>
+          <span class="badge ok">OPERATIVA</span>
+        </div>
+
+        <div class="timeline">
+          ${slotsHtml}
+        </div>
+
+        <button class="card-link" data-avion="${escapar(a.avion)}" onclick="irReserva(this.dataset.avion)">Nueva reserva para ${escapar(a.avion)} →</button>
+      `;
+    }
+
+    contenedor.appendChild(card);
+  });
+}
+
+function cargarReservasMes(reservas) {
+  const contenedor = document.getElementById("reservasMesDetalle");
+
+  if (!reservas.length) {
+    contenedor.innerHTML =
+      '<p class="empty">No hay reservas confirmadas este mes.</p>';
+    return;
+  }
+
+  const filas = reservas.slice(0, 8).map(function(r) {
+    return `
+      <tr>
+        <td>${escapar(r.fecha)}</td>
+        <td>${escapar(r.inicio)}</td>
+        <td>${escapar(r.termino)}</td>
+        <td><strong>${escapar(r.avion)}</strong></td>
+        <td>${escapar(r.piloto)}</td>
+        <td><span class="type-pill">${escapar(r.tipo || "Reserva")}</span></td>
+      </tr>
+    `;
+  }).join("");
+
+  contenedor.innerHTML = `
+    <table>
+      <thead>
+        <tr>
+          <th>Fecha</th>
+          <th>Inicio</th>
+          <th>Término</th>
+          <th>Aeronave</th>
+          <th>Piloto</th>
+          <th>Tipo</th>
+        </tr>
+      </thead>
+      <tbody>${filas}</tbody>
+    </table>
+  `;
+}
+
+function cargarFueraDeVuelo(registros) {
+  const contenedor = document.getElementById("fueraDeVueloDetalle");
+
+  if (!registros.length) {
+    contenedor.innerHTML =
+      '<p class="empty">No hay aeronaves fuera de vuelo en el mes.</p>';
+    return;
+  }
+
+  const filas = registros.slice(0, 6).map(function(f) {
+    return `
+      <tr>
+        <td><strong class="red">${escapar(f.avion)}</strong></td>
+        <td>${escapar(f.desde)}</td>
+        <td>${escapar(f.hasta)}</td>
+        <td>${escapar(f.motivo || "—")}</td>
+      </tr>
+    `;
+  }).join("");
+
+  contenedor.innerHTML = `
+    <table>
+      <thead>
+        <tr>
+          <th>Aeronave</th>
+          <th>Desde</th>
+          <th>Hasta</th>
+          <th>Motivo</th>
+        </tr>
+      </thead>
+      <tbody>${filas}</tbody>
+    </table>
+  `;
+}
+
+function cargarAlertas(alertas) {
+  const contenedor = document.getElementById("alertas");
+
+  if (!alertas.length) {
+    contenedor.innerHTML =
+      '<p class="empty">No hay alertas operacionales.</p>';
+    return;
+  }
+
+  contenedor.innerHTML = alertas.map(function(a) {
+    const tipo = a.tipo || "info";
+    const icono =
+      tipo === "danger"
+        ? "!"
+        : tipo === "ok"
+          ? "✓"
+          : "i";
+
+    return `
+      <div class="alert ${escapar(tipo)}">
+        <div class="alert-icon">${icono}</div>
+        <div>
+          <div class="alert-title">${escapar(a.titulo)}</div>
+          <div class="alert-detail">${escapar(a.detalle)}</div>
+        </div>
+      </div>
+    `;
+  }).join("");
+}
+
+function configurarBotones(links) {
+  asignarBoton("btnReserva", links.reserva);
+  asignarBoton("btnFDV", links.fdv);
+  asignarBoton("btnCalendario", links.calendario);
+  asignarBoton("btnCalendarioTop", links.calendario);
+  asignarBoton("btnCalendarioMes", links.calendario);
+
+  asignarBoton("navReserva", links.reserva);
+  asignarBoton("navFDV", links.fdv);
+  asignarBoton("navCalendario", links.calendario);
+}
+
+function asignarBoton(id, url) {
+  const boton = document.getElementById(id);
+
+  if (!boton) return;
+
+  if (!url) {
+    boton.disabled = true;
+    boton.style.opacity = "0.45";
+    boton.style.cursor = "not-allowed";
+    return;
+  }
+
+  boton.onclick = function () {
+    window.location.href = url;
+  };
+}
+
+function irReserva(avion) {
+  window.location.href =
+    airbook.paginas.reserva +
+    (avion ? "?avion=" + encodeURIComponent(avion) : "");
+}
+
+function irCalendario() {
+  if (linksGlobales.calendario) {
+    window.location.href = linksGlobales.calendario;
+  }
+}
+
+function mostrarError(error) {
+  console.error(error);
+
+  document.getElementById("tarjetasAeronaves").innerHTML =
+    '<p class="empty">No se pudo cargar la disponibilidad operacional.</p>';
+
+  document.getElementById("reservasMesDetalle").innerHTML =
+    '<p class="empty">No se pudieron cargar las reservas del mes.</p>';
+
+  document.getElementById("fueraDeVueloDetalle").innerHTML =
+    '<p class="empty">No se pudo cargar fuera de vuelo.</p>';
+
+  document.getElementById("alertas").innerHTML =
+    '<p class="empty">' + escapar(error && error.message ? error.message : "Error desconocido") + '</p>';
+}
+
+function escapar(valor) {
+  return String(valor || "")
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#039;");
+}
 </script>
 
 </body>
-
 </html>

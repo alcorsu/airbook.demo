@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+  <title>Nueva reserva AIRBOOK</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" sizes="180x180" href="05_AIRBOOK_Isotipo2180.png">
+<link rel="icon" type="image/png" sizes="192x192" href="05_AIRBOOK_Isotipo2192.png">
+<meta name="theme-color" content="#0F172A">
+<script src="config.js?v=3"></script>
+<script src="api.js?v=1"></script>
+<style>
+    :root {
+      --navy: #0f172a;
+      --blue: #38bdf8;
+      --blue-dark: #0284c7;
+      --bg: #f8fafc;
+      --card: #ffffff;
+      --text: #0f172a;
+      --muted: #64748b;
+      --border: #e2e8f0;
+      --green: #16a34a;
+      --red: #dc2626;
+    }
+
+    * {
+      box-sizing: border-box;
+      font-family: Arial, sans-serif;
+    }
+
+    body {
+      margin: 0;
+      background: linear-gradient(135deg, #0f172a, #1e293b);
+      min-height: 100vh;
+      color: var(--text);
+      padding: 18px;
+    }
+
+    .container {
+  max-width: 520px;
+  margin: 0 auto;
+}
+
+.logo-airbook {
+  height: 95px;
+  max-width: 280px;
+  width: auto;
+  object-fit: contain;
+  display: block;
+  margin: 0 auto 10px auto;
+}
+
+.header {
+  text-align: center;
+  color: white;
+  margin-bottom: 18px;
+}
+
+    .club {
+      margin-top: 4px;
+      color: #cbd5e1;
+      font-size: 15px;
+    }
+
+    .club:empty {
+  display: none;
+}
+
+    .card {
+      background: var(--card);
+      border-radius: 22px;
+      padding: 22px;
+      box-shadow: 0 18px 45px rgba(0,0,0,.22);
+    }
+
+    h1 {
+      font-size: 24px;
+      margin: 0 0 6px;
+    }
+
+    .subtitle {
+      font-size: 14px;
+      color: var(--muted);
+      margin-bottom: 22px;
+    }
+
+    label {
+      display: block;
+      font-size: 13px;
+      font-weight: 700;
+      margin-bottom: 7px;
+      color: #334155;
+    }
+
+    .field {
+      margin-bottom: 16px;
+    }
+
+    input, select, textarea {
+      width: 100%;
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 13px 14px;
+      font-size: 15px;
+      outline: none;
+      background: white;
+    }
+
+    input:focus, select:focus, textarea:focus {
+      border-color: var(--blue);
+      box-shadow: 0 0 0 3px rgba(56,189,248,.25);
+    }
+
+    textarea {
+      min-height: 80px;
+      resize: vertical;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 0;
+    }
+
+    .button {
+      width: 100%;
+      border: none;
+      border-radius: 16px;
+      padding: 15px;
+      background: linear-gradient(135deg, var(--blue), var(--blue-dark));
+      color: white;
+      font-size: 16px;
+      font-weight: 800;
+      cursor: pointer;
+      margin-top: 8px;
+    }
+    
+    .button-secondary {
+  width: 100%;
+  border: none;
+  border-radius: 16px;
+  padding: 15px;
+  background: #475569;
+  color: white;
+  font-size: 15px;
+  font-weight: 700;
+  cursor: pointer;
+  margin-top: 10px;
+}
+
+.button-secondary:hover {
+  background: #334155;
+}
+    .button:disabled {
+      opacity: .65;
+      cursor: not-allowed;
+    }
+
+    .status {
+      display: none;
+      margin-top: 16px;
+      border-radius: 14px;
+      padding: 14px;
+      font-size: 14px;
+      line-height: 1.4;
+    }
+
+    .status.ok {
+      display: block;
+      background: #dcfce7;
+      color: #166534;
+      border: 1px solid #86efac;
+    }
+
+    .status.error {
+      display: block;
+      background: #fee2e2;
+      color: #991b1b;
+      border: 1px solid #fca5a5;
+    }
+
+    .footer {
+      text-align: center;
+      color: #94a3b8;
+      font-size: 12px;
+      margin-top: 16px;
+    }
+
+    @media (min-width: 600px) {
+      .grid {
+        grid-template-columns: 1fr 1fr;
+        gap: 14px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container">
+
+   <div class="header">
+
+  <img
+    src="AIRBOOK_Logo_Dashboard_Transparente.png"
+    alt="AIRBOOK"
+    class="logo-airbook">
+
+  <div class="club" id="club"></div>
+
+</div>
+
+    <div class="card">
+      <h1>Nueva reserva</h1>
+      <div class="subtitle">
+        Complete los datos para solicitar una aeronave.
+      </div>
+
+      <form id="formReserva">
+
+        <div class="field">
+          <label>Aeronave</label>
+          <select id="avion" required>
+            <option value="">Seleccione aeronave</option>
+          </select>
+        </div>
+
+        <div class="grid">
+          <div class="field">
+            <label>Fecha y hora de inicio</label>
+            <input id="inicio" type="datetime-local" required>
+          </div>
+
+          <div class="field">
+            <label>Fecha y hora de término</label>
+            <input id="fin" type="datetime-local" required>
+          </div>
+        </div>
+
+        <div class="field">
+          <label>Piloto</label>
+          <input id="piloto" type="text" placeholder="Nombre del piloto" required>
+        </div>
+
+        <div class="field">
+          <label>Correo</label>
+          <input id="correo" type="email" placeholder="correo@ejemplo.com" required>
+        </div>
+
+        <div class="field">
+          <label>Tipo de vuelo</label>
+          <select id="tipo" required>
+            <option value="">Seleccione tipo de vuelo</option>
+            <option value="LOCAL">LOCAL</option>
+            <option value="INSTRUCCIÓN">INSTRUCCIÓN</option>
+            <option value="TRAVESÍA">TRAVESÍA</option>
+            <option value="ENTRENAMIENTO">ENTRENAMIENTO</option>
+            <option value="OTRO">OTRO</option>
+          </select>
+        </div>
+
+        <div class="field">
+          <label>Instructor</label>
+          <input id="instructor" type="text" placeholder="Opcional">
+        </div>
+
+        <div class="field">
+          <label>Observaciones</label>
+          <textarea id="observaciones" placeholder="Opcional"></textarea>
+        </div>
+
+        <button class="button" id="btnEnviar" type="submit">
+          SOLICITAR RESERVA
+        </button>
+
+        <button
+  type="button"
+  class="button-secondary"
+  onclick="volverDashboard()">
+  ← VOLVER AL DASHBOARD
+</button>
+
+        <div id="status" class="status"></div>
+      </form>
+    </div>
+
+    <div class="footer">
+      AIRBOOK · Sistema de gestión de reservas aeronáuticas
+    </div>
+
+  </div>
+
+<script>
+const form = document.getElementById("formReserva");
+const statusBox = document.getElementById("status");
+const btnEnviar = document.getElementById("btnEnviar");
+const esc = airbook.escapar;
+
+function mostrarEstado(tipo, mensaje) {
+  statusBox.className = "status " + tipo;
+  statusBox.innerHTML = mensaje;
+}
+
+function cargarDatosIniciales() {
+  airbook.llamar("datosReserva")
+    .then(function(data) {
+      document.getElementById("club").textContent = data.club || "";
+
+      const select = document.getElementById("avion");
+      select.innerHTML = '<option value="">Seleccione aeronave</option>';
+
+      (data.flota || []).forEach(function(avion) {
+        const option = document.createElement("option");
+        option.value = avion;
+        option.textContent = avion;
+        select.appendChild(option);
+      });
+
+      // Preselecciona la aeronave si viene desde el dashboard
+      const pedida = new URLSearchParams(location.search).get("avion");
+      if (pedida && (data.flota || []).indexOf(pedida) !== -1) {
+        select.value = pedida;
+      }
+    })
+    .catch(function(error) {
+      mostrarEstado("error", "No fue posible cargar la configuración: " + esc(error.message));
+    });
+}
+
+form.addEventListener("submit", function(e) {
+  e.preventDefault();
+
+  statusBox.className = "status";
+
+  const inicio = document.getElementById("inicio").value;
+  const fin = document.getElementById("fin").value;
+
+  if (!inicio || !fin) {
+    mostrarEstado("error", "Debe ingresar fecha y hora de inicio y término.");
+    return;
+  }
+
+  if (new Date(fin) <= new Date(inicio)) {
+    mostrarEstado("error", "La fecha y hora de término debe ser posterior al inicio.");
+    return;
+  }
+
+  const datos = {
+    avion: document.getElementById("avion").value,
+    inicio: inicio,
+    fin: fin,
+    piloto: document.getElementById("piloto").value,
+    correo: document.getElementById("correo").value,
+    tipo: document.getElementById("tipo").value,
+    instructor: document.getElementById("instructor").value,
+    observaciones: document.getElementById("observaciones").value
+  };
+
+  btnEnviar.disabled = true;
+  btnEnviar.textContent = "PROCESANDO...";
+
+  airbook.llamar("guardarReserva", datos)
+    .then(function(respuesta) {
+      if (respuesta.ok) {
+        mostrarEstado(
+          "ok",
+          "<div style='font-size:18px;font-weight:800;margin-bottom:6px;'>✅ Reserva confirmada</div>" +
+          "<div>La reserva fue incorporada al calendario y se envió el correo de confirmación al piloto.</div>" +
+          "<div style='margin-top:10px;font-size:13px;'>Puedes volver al Dashboard o registrar una nueva reserva.</div>"
+        );
+        form.reset();
+      } else {
+        mostrarEstado("error", "<b>No fue posible confirmar la reserva.</b><br>" + esc(respuesta.mensaje));
+      }
+    })
+    .catch(function(error) {
+      mostrarEstado("error", "<b>Error al procesar la reserva.</b><br>" + esc(error.message));
+    })
+    .then(function() {
+      btnEnviar.disabled = false;
+      btnEnviar.textContent = "SOLICITAR RESERVA";
+    });
+});
+
+function volverDashboard() {
+  airbook.ir("dashboard");
+}
+
+cargarDatosIniciales();
+</script>
+</body>
+</html>

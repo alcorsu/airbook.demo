@@ -1,0 +1,579 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Calendario AIRBOOK</title>
+
+  <link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" sizes="180x180" href="05_AIRBOOK_Isotipo2180.png">
+<link rel="icon" type="image/png" sizes="192x192" href="05_AIRBOOK_Isotipo2192.png">
+<meta name="theme-color" content="#0F172A">
+<script src="config.js?v=3"></script>
+<script src="api.js?v=1"></script>
+<style>
+    :root {
+      --navy: #0F172A;
+      --blue: #0284C7;
+      --green: #16A34A;
+      --red: #DC2626;
+      --gray: #64748B;
+      --bg: #F8FAFC;
+      --border: #E2E8F0;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: var(--bg);
+      color: var(--navy);
+    }
+
+    header {
+      background: var(--navy);
+      color: white;
+      padding: 22px;
+    }
+
+    header h1 {
+      margin: 0;
+      font-size: 28px;
+    }
+
+    header p {
+      margin: 6px 0 0;
+      opacity: .8;
+    }
+
+    .toolbar {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      padding: 16px;
+      background: white;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .legend {
+      display: flex;
+      gap: 14px;
+      flex-wrap: wrap;
+      padding: 10px 16px;
+      background: #F8FAFC;
+      border-bottom: 1px solid var(--border);
+      font-size: 13px;
+      color: var(--navy);
+    }
+
+    .legend-item {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-weight: bold;
+    }
+
+    .legend-dot {
+      width: 12px;
+      height: 12px;
+      border-radius: 999px;
+      display: inline-block;
+    }
+
+    .legend-dot.green {
+      background: var(--green);
+    }
+
+    .legend-dot.red {
+      background: var(--red);
+    }
+
+    .legend-dot.blue {
+      background: var(--blue);
+    }
+
+    button, select {
+      border: 1px solid var(--border);
+      background: white;
+      padding: 10px 14px;
+      border-radius: 10px;
+      font-size: 14px;
+      cursor: pointer;
+    }
+
+    button.primary {
+      background: var(--blue);
+      color: white;
+      border: none;
+      font-weight: bold;
+    }
+
+    .calendar {
+      padding: 16px;
+    }
+
+    .month-title {
+      font-size: 24px;
+      font-weight: bold;
+      margin-bottom: 14px;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      gap: 1px;
+      background: var(--border);
+      border: 1px solid var(--border);
+    }
+
+    .day-name,
+    .day {
+      background: white;
+      min-height: 95px;
+      padding: 6px;
+    }
+
+    .day-name {
+      min-height: auto;
+      text-align: center;
+      font-weight: bold;
+      color: var(--gray);
+      background: #F1F5F9;
+      padding: 8px;
+    }
+
+    .day-number {
+      font-weight: bold;
+      margin-bottom: 5px;
+      font-size: 13px;
+    }
+
+    .muted {
+      color: #CBD5E1;
+    }
+
+    .event {
+      font-size: 10px;
+      padding: 3px 5px;
+      margin-bottom: 2px;
+      border-radius: 6px;
+      color: white;
+      cursor: pointer;
+      line-height: 1.1;
+      overflow: hidden;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+    }
+
+    .CONFIRMADA {
+      background: var(--green);
+    }
+
+    .FUERA-DE-VUELO {
+      background: var(--red);
+    }
+
+    .mas-eventos {
+      background: var(--blue);
+      color: white;
+      font-weight: bold;
+      text-align: center;
+    }
+
+    .modal {
+      position: fixed;
+      inset: 0;
+      background: rgba(15, 23, 42, .65);
+      display: none;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+      z-index: 999;
+    }
+
+    .modal-content {
+      background: white;
+      width: 100%;
+      max-width: 460px;
+      border-radius: 18px;
+      padding: 22px;
+    }
+
+    .modal-content h2 {
+      margin-top: 0;
+    }
+
+    .modal-content p {
+      margin: 8px 0;
+    }
+
+    .close {
+      margin-top: 16px;
+      width: 100%;
+      background: var(--navy);
+      color: white;
+      border: none;
+      font-weight: bold;
+    }
+
+    @media (max-width: 800px) {
+      .grid {
+        grid-template-columns: 1fr;
+      }
+
+      .day-name {
+        display: none;
+      }
+
+      .day {
+        min-height: auto;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+<header>
+  <h1>AIRBOOK · Calendario operacional</h1>
+  <p id="club">Cargando...</p>
+</header>
+
+<div class="toolbar">
+  <button onclick="mesAnterior()">◀</button>
+  <button onclick="mesActual()">Hoy</button>
+  <button onclick="mesSiguiente()">▶</button>
+
+  <select id="filtroAvion" onchange="renderCalendario()">
+    <option value="">Todos los aviones</option>
+  </select>
+
+  <button class="primary" onclick="abrirReserva()">Nueva reserva</button>
+  <button onclick="abrirFDV()">Fuera de vuelo</button>
+  <button onclick="volverDashboard()">Dashboard</button>
+</div>
+
+<div class="legend">
+  <div class="legend-item">
+    <span class="legend-dot green"></span>
+    Reserva confirmada
+  </div>
+
+  <div class="legend-item">
+    <span class="legend-dot red"></span>
+    Aeronave fuera de vuelo
+  </div>
+
+  <div class="legend-item">
+    <span class="legend-dot blue"></span>
+    Día con varias reservas
+  </div>
+</div>
+
+<div class="calendar">
+  <div class="month-title" id="tituloMes"></div>
+  <div class="grid" id="calendarGrid"></div>
+</div>
+
+<div class="modal" id="modal">
+  <div class="modal-content">
+    <h2 id="modalTitulo"></h2>
+    <p id="modalDetalle"></p>
+    <button class="close" onclick="cerrarModal()">Cerrar</button>
+  </div>
+</div>
+
+<script>
+  let eventos = [];
+  let flota = [];
+  let fechaActual = new Date();
+  let linksGlobales = {};
+
+  airbook.llamar("calendario")
+    .then(iniciarCalendario)
+    .catch(function(error) {
+      document.getElementById("club").textContent =
+        "No se pudo cargar el calendario: " + error.message;
+    });
+
+  function iniciarCalendario(data) {
+    document.getElementById("club").textContent =
+      data.club + " · Actualizado " + data.generado;
+
+    eventos = filtrarEventosOperacionales(data.eventos || []);
+    flota = data.flota || [];
+    linksGlobales = airbook.paginas;
+
+    cargarFiltroAviones();
+    renderCalendario();
+  }
+
+  function filtrarEventosOperacionales(lista) {
+    const ahora = new Date();
+
+    return lista.filter(function(e) {
+      const estado = String(e.estado || "")
+        .trim()
+        .toUpperCase();
+
+      if (
+        estado !== "CONFIRMADA" &&
+        estado !== "FUERA DE VUELO"
+      ) {
+        return false;
+      }
+
+      const fin = new Date(e.finISO);
+
+      if (isNaN(fin.getTime())) {
+        return false;
+      }
+
+      if (fin < ahora) {
+        return false;
+      }
+
+      return true;
+    });
+  }
+
+  function cargarFiltroAviones() {
+    const select = document.getElementById("filtroAvion");
+    select.innerHTML = '<option value="">Todos los aviones</option>';
+
+    let aviones = flota;
+
+    if (!aviones || !aviones.length) {
+      aviones = [...new Set(eventos.map(e => e.avion).filter(Boolean))].sort();
+    }
+
+    aviones.forEach(avion => {
+      const option = document.createElement("option");
+      option.value = avion;
+      option.textContent = avion;
+      select.appendChild(option);
+    });
+  }
+
+  function renderCalendario() {
+    const grid = document.getElementById("calendarGrid");
+    const titulo = document.getElementById("tituloMes");
+    const filtroAvion = document.getElementById("filtroAvion").value;
+
+    grid.innerHTML = "";
+
+    const year = fechaActual.getFullYear();
+    const month = fechaActual.getMonth();
+
+    titulo.textContent = fechaActual.toLocaleDateString("es-CL", {
+      month: "long",
+      year: "numeric"
+    }).toUpperCase();
+
+    const dias = ["Lun", "Mar", "Mié", "Jue", "Vie", "Sáb", "Dom"];
+
+    dias.forEach(dia => {
+      const div = document.createElement("div");
+      div.className = "day-name";
+      div.textContent = dia;
+      grid.appendChild(div);
+    });
+
+    const primerDia = new Date(year, month, 1);
+    const ultimoDia = new Date(year, month + 1, 0);
+
+    let inicioSemana = primerDia.getDay();
+    inicioSemana = inicioSemana === 0 ? 6 : inicioSemana - 1;
+
+    for (let i = 0; i < inicioSemana; i++) {
+      const div = document.createElement("div");
+      div.className = "day muted";
+      grid.appendChild(div);
+    }
+
+    for (let dia = 1; dia <= ultimoDia.getDate(); dia++) {
+      const fecha = new Date(year, month, dia);
+      const div = document.createElement("div");
+      div.className = "day";
+
+      const num = document.createElement("div");
+      num.className = "day-number";
+      num.textContent = dia;
+      div.appendChild(num);
+
+      const eventosDia = eventos.filter(e => {
+        const inicio = new Date(e.inicioISO);
+        const fin = new Date(e.finISO);
+
+        const inicioDia = new Date(fecha);
+        inicioDia.setHours(0, 0, 0, 0);
+
+        const finDia = new Date(fecha);
+        finDia.setHours(23, 59, 59, 999);
+
+        const solapaConDia =
+          inicio <= finDia &&
+          fin >= inicioDia;
+
+        const avionOk =
+          !filtroAvion ||
+          e.avion === filtroAvion;
+
+        return solapaConDia && avionOk;
+      });
+
+      const visibles = eventosDia
+        .sort((a, b) => {
+          const avionA = String(a.avion || "");
+          const avionB = String(b.avion || "");
+
+          if (avionA !== avionB) {
+            return avionA.localeCompare(avionB);
+          }
+
+          return String(a.horaInicio || "").localeCompare(
+            String(b.horaInicio || "")
+          );
+        })
+        .slice(0, 4);
+
+      visibles.forEach(evento => {
+        const ev = document.createElement("div");
+        ev.className =
+          "event " +
+          claseEstado(evento.estado);
+
+        ev.innerHTML = escapar(evento.avion);
+
+        ev.onclick = () =>
+          mostrarDetalle(evento);
+
+        div.appendChild(ev);
+      });
+
+      if (eventosDia.length > 4) {
+        const extra = document.createElement("div");
+        extra.className = "event mas-eventos";
+        extra.textContent =
+          "+" +
+          (eventosDia.length - 4) +
+          " más";
+
+        extra.onclick = () =>
+          mostrarListaDia(fecha, eventosDia);
+
+        div.appendChild(extra);
+      }
+
+      grid.appendChild(div);
+    }
+  }
+
+  function claseEstado(estado) {
+    return String(estado || "")
+      .toUpperCase()
+      .replaceAll(" ", "-");
+  }
+
+  function mostrarDetalle(e) {
+    document.getElementById("modalTitulo").textContent = e.titulo;
+
+    document.getElementById("modalDetalle").innerHTML =
+      "<b>Estado:</b> " + escapar(e.estado) + "<br>" +
+      "<b>Avión:</b> " + escapar(e.avion) + "<br>" +
+      "<b>Inicio:</b> " + escapar(e.fecha) + " " + escapar(e.horaInicio) + "<br>" +
+      "<b>Término:</b> " + escapar(e.horaFin) + "<br>" +
+      "<b>Tipo:</b> " + escapar(e.tipo || "—") + "<br>" +
+      "<b>Piloto:</b> " + escapar(e.piloto || "—") + "<br>" +
+      "<b>Instructor:</b> " + escapar(e.instructor || "—") + "<br>" +
+      "<b>Observaciones:</b> " + escapar(e.observaciones || "—");
+
+    document.getElementById("modal").style.display = "flex";
+  }
+
+  function mostrarListaDia(fecha, eventosDia) {
+    const eventosValidos = filtrarEventosOperacionales(eventosDia);
+
+    const fechaTxt = fecha.toLocaleDateString("es-CL", {
+      weekday: "long",
+      day: "2-digit",
+      month: "long",
+      year: "numeric"
+    });
+
+    document.getElementById("modalTitulo").textContent =
+      "Eventos del " + fechaTxt;
+
+    const lista = eventosValidos
+      .sort((a, b) => String(a.horaInicio || "").localeCompare(String(b.horaInicio || "")))
+      .map(e => {
+        return (
+          "<p>" +
+          "<b>" + escapar(e.avion) + "</b> · " +
+          escapar(e.horaInicio) + " a " +
+          escapar(e.horaFin) + "<br>" +
+          escapar(e.estado) +
+          (e.piloto ? " · " + escapar(e.piloto) : "") +
+          "</p>"
+        );
+      })
+      .join("");
+
+    document.getElementById("modalDetalle").innerHTML =
+      lista || "Sin eventos.";
+
+    document.getElementById("modal").style.display = "flex";
+  }
+
+  function cerrarModal() {
+    document.getElementById("modal").style.display = "none";
+  }
+
+  function mesAnterior() {
+    fechaActual.setMonth(fechaActual.getMonth() - 1);
+    renderCalendario();
+  }
+
+  function mesSiguiente() {
+    fechaActual.setMonth(fechaActual.getMonth() + 1);
+    renderCalendario();
+  }
+
+  function mesActual() {
+    fechaActual = new Date();
+    renderCalendario();
+  }
+
+  function abrirReserva() {
+    if (linksGlobales.reserva) {
+      window.location.href = linksGlobales.reserva;
+    }
+  }
+
+  function abrirFDV() {
+    if (linksGlobales.fdv) {
+      window.location.href = linksGlobales.fdv;
+    }
+  }
+
+  function volverDashboard() {
+    if (linksGlobales.dashboard) {
+      window.location.href = linksGlobales.dashboard;
+    }
+  }
+
+  function escapar(valor) {
+    return String(valor || "")
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;")
+      .replace(/'/g, "&#039;");
+  }
+</script>
+
+</body>
+</html>
